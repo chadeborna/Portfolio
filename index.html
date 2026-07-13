@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BUILD.log — Engineering Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     EDIT YOUR PROJECTS HERE — search for "PROJECT DATA" below
+     ============================================================ */
+
+  :root{
+    --bg:#0b0e14;
+    --bg-raised:#12161f;
+    --bg-card:#151a24;
+    --line:#232a38;
+    --text:#dfe6f0;
+    --muted:#7c8798;
+    --cyan:#6be2d6;
+    --amber:#ffb454;
+    --magenta:#ff7ab8;
+    --green:#8bd17c;
+    --common:#7c8798;
+    --rare:#6be2d6;
+    --legendary:#ffb454;
+    --locked:#3a4152;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    background:
+      radial-gradient(ellipse 800px 500px at 15% -10%, rgba(107,226,214,0.07), transparent),
+      radial-gradient(ellipse 700px 500px at 100% 20%, rgba(255,180,84,0.06), transparent),
+      var(--bg);
+    color:var(--text);
+    font-family:'JetBrains Mono', monospace;
+    line-height:1.6;
+    min-height:100vh;
+  }
+
+  .pixel{font-family:'Press Start 2P', monospace;}
+
+  /* subtle scanline texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(
+      0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px,
+      transparent 1px, transparent 3px
+    );
+    z-index:1;
+  }
+
+  a{color:inherit; text-decoration:none;}
+
+  ::selection{background:var(--cyan); color:#0b0e14;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 28px;
+    background:rgba(11,14,20,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-brand{
+    display:flex; align-items:center; gap:10px;
+    font-size:12px; letter-spacing:0.5px;
+  }
+  .nav-led{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 8px var(--green);
+    animation:blink 2.4s infinite;
+  }
+  @keyframes blink{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  .nav-links{display:flex; gap:24px; font-size:12px; color:var(--muted);}
+  .nav-links a:hover{color:var(--cyan);}
+  .nav-links{display:none;}
+  @media(min-width:640px){ .nav-links{display:flex;} }
+
+  /* ---------- HERO / BOOT SCREEN ---------- */
+  .hero{
+    max-width:920px; margin:0 auto;
+    padding:80px 24px 60px;
+    position:relative; z-index:2;
+  }
+  .boot-line{
+    font-size:11px; color:var(--green);
+    opacity:0; white-space:pre;
+    animation:appear 0.3s forwards;
+  }
+  .boot-line .ok{color:var(--cyan);}
+  @keyframes appear{ to{opacity:1;} }
+
+  .hero h1{
+    font-size:clamp(28px, 6vw, 52px);
+    line-height:1.25;
+    margin:28px 0 14px;
+    letter-spacing:0.5px;
+  }
+  .hero h1 .accent{color:var(--cyan);}
+  .hero p.sub{
+    color:var(--muted);
+    font-size:15px;
+    max-width:560px;
+    margin-bottom:28px;
+  }
+  .hero-tags{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:36px;}
+  .tag{
+    font-size:11px; padding:6px 10px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    color:var(--muted);
+    background:var(--bg-raised);
+  }
+  .stat-bar-wrap{
+    display:flex; align-items:center; gap:12px;
+    font-size:11px; color:var(--muted); margin-bottom:8px;
+  }
+  .stat-bar{
+    flex:1; height:8px; background:var(--bg-raised);
+    border:1px solid var(--line); border-radius:2px;
+    overflow:hidden;
+  }
+  .stat-fill{
+    height:100%;
+    background:linear-gradient(90deg, var(--cyan), var(--green));
+  }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{max-width:920px; margin:0 auto; padding:60px 24px; position:relative; z-index:2;}
+  .eyebrow{
+    font-size:11px; color:var(--amber);
+    letter-spacing:2px; text-transform:uppercase;
+    margin-bottom:10px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::after{content:""; flex:1; height:1px; background:var(--line);}
+  h2{font-size:22px; margin-bottom:24px; letter-spacing:0.3px;}
+
+  /* ---------- ABOUT (spec panel) ---------- */
+  .spec-panel{
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .spec-row{
+    display:grid; grid-template-columns:140px 1fr;
+    padding:14px 20px;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+  }
+  .spec-row:last-child{border-bottom:none;}
+  .spec-row .k{color:var(--muted);}
+  .spec-row .v{color:var(--text);}
+
+  /* ---------- PROJECTS (component list) ---------- */
+  .filter-row{display:none;}
+
+  .project-grid{display:grid; gap:16px;}
+
+  .card{
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:20px;
+    position:relative;
+    transition:transform 0.15s, border-color 0.15s;
+  }
+  .card:not(.locked):hover{transform:translateY(-2px); border-color:var(--cyan);}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:10px;}
+  .card-title{font-size:15px; font-weight:700;}
+  .card-desc{font-size:13px; color:var(--muted); margin-bottom:14px;}
+  .card-stack{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px;}
+  .chip{
+    font-size:10px; padding:3px 8px;
+    background:var(--bg-raised); border:1px solid var(--line);
+    border-radius:3px; color:var(--muted);
+  }
+  .card-links{display:flex; gap:16px; font-size:12px;}
+  .card-links a{color:var(--cyan); border-bottom:1px dashed transparent;}
+  .card-links a:hover{border-bottom-color:var(--cyan);}
+
+  .dropdown-toggle{
+    display:flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px; color:var(--cyan);
+    background:none; border:none; cursor:pointer;
+    padding:6px 0 0;
+  }
+  .dropdown-toggle .arrow{
+    display:inline-block; transition:transform 0.15s;
+    font-size:10px;
+  }
+  .dropdown-toggle.open .arrow{transform:rotate(90deg);}
+  .subitems{
+    display:none;
+    margin-top:14px; padding-top:14px;
+    border-top:1px solid var(--line);
+  }
+  .subitems.open{display:block;}
+  .subitem{padding:10px 0;}
+  .subitem:not(:last-child){border-bottom:1px solid var(--line);}
+  .subitem-title{font-size:13px; font-weight:700; margin-bottom:4px;}
+  .subitem-desc{font-size:12px; color:var(--muted);}
+
+  .subitem-images{
+    display:flex; flex-wrap:wrap; gap:8px;
+    margin-top:10px;
+  }
+  .subitem-images img{
+    width:88px; height:88px; object-fit:cover;
+    border-radius:4px; border:1px solid var(--line);
+    cursor:pointer; transition:border-color 0.15s, transform 0.15s;
+    display:block;
+  }
+  .subitem-images img:hover{border-color:var(--cyan); transform:scale(1.03);}
+
+  .subitem-files{
+    display:flex; flex-direction:column; gap:4px;
+    margin-top:10px;
+  }
+  .subitem-files a{
+    font-size:12px; color:var(--amber);
+    display:inline-flex; align-items:center; gap:6px;
+    width:fit-content;
+  }
+  .subitem-files a:hover{text-decoration:underline;}
+
+  .lightbox{
+    display:none;
+    position:fixed; inset:0; z-index:100;
+    background:rgba(6,8,12,0.9);
+    align-items:center; justify-content:center;
+    padding:40px 20px;
+    cursor:zoom-out;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:100%; max-height:80vh;
+    border-radius:6px; border:1px solid var(--line);
+  }
+  .lightbox-caption{
+    position:absolute; bottom:28px; left:0; right:0;
+    text-align:center; font-size:12px; color:var(--muted);
+  }
+  .lightbox-close{
+    position:absolute; top:20px; right:24px;
+    font-size:22px; color:var(--text);
+    background:none; border:none; cursor:pointer;
+  }
+
+  .card.locked{
+    display:flex; align-items:center; justify-content:center;
+    min-height:80px;
+    border-style:dashed;
+    color:var(--locked);
+    font-size:12px; text-align:center;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:16px;}
+  .skill-group{
+    background:var(--bg-card);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:18px 20px;
+  }
+  .skill-group h3{
+    font-size:12px; color:var(--amber); letter-spacing:0.5px;
+    text-transform:uppercase; margin-bottom:12px;
+  }
+  .skill-group ul{list-style:none;}
+  .skill-group li{
+    font-size:13px; color:var(--text);
+    padding:5px 0; padding-left:16px; position:relative;
+  }
+  .skill-group li::before{
+    content:"▸"; position:absolute; left:0; color:var(--cyan);
+  }
+
+  /* ---------- BUILD LOG (timeline) ---------- */
+  .log-item{
+    display:flex; gap:16px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .log-item:last-child{border-bottom:none;}
+  .log-date{
+    font-size:11px; color:var(--muted); width:80px; flex-shrink:0; padding-top:2px;
+  }
+  .log-text{font-size:13px;}
+  .log-text b{color:var(--cyan);}
+
+  /* ---------- CONTACT / FOOTER ---------- */
+  footer{
+    max-width:920px; margin:0 auto;
+    padding:50px 24px 70px;
+    text-align:center;
+  }
+  footer h2{font-size:20px;}
+  footer p{color:var(--muted); font-size:13px; margin-bottom:24px;}
+  .contact-links{display:flex; justify-content:center; gap:20px; flex-wrap:wrap;}
+  .contact-links a{
+    font-size:12px; padding:10px 18px;
+    border:1px solid var(--line); border-radius:4px;
+    background:var(--bg-raised);
+  }
+  .contact-links a:hover{border-color:var(--cyan); color:var(--cyan);}
+  .foot-note{margin-top:40px; font-size:10px; color:var(--locked);}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">
+    <span class="nav-led"></span>
+    <span>build.log</span>
+  </div>
+  <div class="nav-links">
+    <a href="#about">about</a>
+    <a href="#projects">projects</a>
+    <a href="#skills">skills</a>
+    <a href="#log">build log</a>
+    <a href="#contact">contact</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div id="boot"></div>
+
+  <h1><span class="accent">[Your Name]</span><br>Computer Engineering Student</h1>
+  <p class="sub">Second-year Computer Engineering student, Ottawa. This site tracks my projects as they progress — from first builds to more advanced work.</p>
+
+  <div class="hero-tags">
+    <span class="tag">Computer Engineering — Yr 2</span>
+    <span class="tag">Arduino / Embedded</span>
+    <span class="tag">Web Dev</span>
+    <span class="tag">PC Building</span>
+  </div>
+
+  <div class="stat-bar-wrap">
+    <span style="width:90px;">XP TO LVL 3</span>
+    <div class="stat-bar"><div class="stat-fill" style="width:42%;"></div></div>
+    <span>42%</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="eyebrow">system info</div>
+  <h2>About</h2>
+  <div class="spec-panel">
+    <div class="spec-row"><span class="k">Program</span><span class="v">Computer Engineering — Year 2</span></div>
+    <div class="spec-row"><span class="k">Location</span><span class="v">University of Ottawa</span></div>
+    <div class="spec-row"><span class="k">Coursework</span><span class="v">Digital Systems (logic circuits, K-maps, flip-flops, sequential design) · Discrete Mathematics · Calculus</span></div>
+    <div class="spec-row"><span class="k">Tools</span><span class="v">C / Python / Arduino · circuit design and breadboard prototyping · web development</span></div>
+    <div class="spec-row"><span class="k">Interests</span><span class="v">Embedded systems, PC hardware, and game design</span></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="eyebrow">component list</div>
+  <h2>Projects</h2>
+
+  <div class="project-grid" id="projectGrid"></div>
+</section>
+
+<section id="skills">
+  <div class="eyebrow">skills</div>
+  <h2>Skills</h2>
+  <div class="skills-grid" id="skillsGrid"></div>
+</section>
+
+<section id="log">
+  <div class="eyebrow">changelog</div>
+  <h2>Build Log</h2>
+  <div id="logList"></div>
+</section>
+
+<footer id="contact">
+  <h2>Let's talk</h2>
+  <p>Open to part-time roles, internships, and collaborative projects.</p>
+  <div class="contact-links">
+    <a href="mailto:you@example.com">email</a>
+    <a href="https://github.com/yourusername" target="_blank" rel="noopener">github</a>
+    <a href="https://linkedin.com/in/yourusername" target="_blank" rel="noopener">linkedin</a>
+  </div>
+  <div class="foot-note">// last compiled 2026 — edit the PROJECT DATA block in this file to add new builds</div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">✕</button>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<script>
+/* ============================================================
+   PROJECT DATA — add a new project by copying an object below.
+   Leave "locked: true" and no other fields for a "coming soon" slot.
+   ============================================================ */
+const PROJECTS = [
+  {
+    title: "Arduino Stream Deck",
+    desc: "A 5-button macro controller with a 16x2 LCD status display. Built from the ground up — breadboard wiring, INPUT_PULLUP button logic, serial communication, and Python-side macro scripting.",
+    stack: ["Arduino", "C++", "Python", "Serial comms"],
+    links: [ { label:"GitHub", url:"#" } ]
+  },
+  {
+    title: "Digital Logic Design — Coursework Projects",
+    desc: "A series of circuit design projects for Digital Systems, covering number systems, Boolean algebra, combinational logic, and sequential logic. Individual pieces below.",
+    stack: ["Boolean Algebra", "K-Maps", "Combinational Logic", "Sequential Logic", "Registers & Counters"],
+    links: [],
+    /* Add individual pieces here as you go. Copy an object below.
+       images: optional array of { src, caption } — src is a relative path, e.g. "assets/my-circuit.png"
+       files:  optional array of { label, url }   — e.g. { label:"Lab Report (PDF)", url:"assets/lab1.pdf" }
+       Put your actual image/PDF files in an "assets" folder next to index.html. */
+    subItems: [
+      { title:"Number Systems & Binary Arithmetic", desc:"Base conversions, complements, signed binary numbers, and binary arithmetic.", images:[], files:[] },
+      { title:"Boolean Algebra & Gate-Level Minimization", desc:"Boolean function simplification using K-maps, NAND/NOR implementation, and don't-care conditions.", images:[], files:[] },
+      { title:"Combinational Circuit Design", desc:"Design and analysis of adders/subtractors, magnitude comparators, decoders, encoders, and multiplexers.", images:[], files:[] },
+      { title:"Synchronous Sequential Circuits", desc:"Latches, flip-flops, and analysis/design of clocked sequential circuits.", images:[], files:[] },
+      { title:"Registers & Counters", desc:"Shift registers, ripple counters, and synchronous counter design.", images:[], files:[] },
+    ]
+  },
+  { locked:true, title:"More projects coming soon" },
+];
+
+/* ============================================================
+   SKILLS DATA — grouped by category. Add or edit freely.
+   ============================================================ */
+const SKILLS = [
+  {
+    category: "Programming",
+    items: ["C / C++", "Python", "Java", "Version control (Git)"]
+  },
+  {
+    category: "Digital Logic & Circuits",
+    items: ["Boolean algebra & K-maps", "Combinational & sequential logic", "Flip-flops & counters", "Circuit analysis & breadboard prototyping"]
+  },
+  {
+    category: "Math Foundations",
+    items: ["Discrete mathematics", "Calculus", "Linear algebra basics"]
+  },
+  {
+    category: "Embedded & Hardware",
+    items: ["Arduino development", "Sensors & LCD interfacing", "Basic PC hardware & builds"]
+  },
+  {
+    category: "Web Development",
+    items: ["HTML / CSS / JavaScript"]
+  },
+];
+
+const LOG = [
+  { date:"2026", text:"Built this portfolio site to track projects going forward." },
+  { date:"2025", text:"Completed <b>Digital Systems</b> — logic design, K-maps, sequential circuits, and SOP/NAND implementation." },
+  { date:"2025", text:"Shipped the <b>Arduino Stream Deck</b> — first hardware and software project built end to end." },
+];
+
+function renderProjects(){
+  const grid = document.getElementById('projectGrid');
+  grid.innerHTML = '';
+  PROJECTS.forEach(p=>{
+    if(p.locked){
+      const el = document.createElement('div');
+      el.className = 'card locked';
+      el.textContent = p.title;
+      grid.appendChild(el);
+      return;
+    }
+
+    const el = document.createElement('div');
+    el.className = 'card';
+
+    const subItemsHTML = (p.subItems && p.subItems.length)
+      ? `
+        <button class="dropdown-toggle" type="button">
+          <span class="arrow">▶</span>
+          <span class="toggle-label">View breakdown (${p.subItems.length})</span>
+        </button>
+        <div class="subitems">
+          ${p.subItems.map(s=>`
+            <div class="subitem">
+              <div class="subitem-title">${s.title}</div>
+              <div class="subitem-desc">${s.desc}</div>
+              ${(s.images && s.images.length) ? `
+                <div class="subitem-images">
+                  ${s.images.map(img=>`<img src="${img.src}" alt="${img.caption||s.title}" data-caption="${img.caption||''}">`).join('')}
+                </div>
+              ` : ''}
+              ${(s.files && s.files.length) ? `
+                <div class="subitem-files">
+                  ${s.files.map(f=>`<a href="${f.url}" target="_blank" rel="noopener">📄 ${f.label}</a>`).join('')}
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+
+    el.innerHTML = `
+      <div class="card-top">
+        <div class="card-title">${p.title}</div>
+      </div>
+      <div class="card-desc">${p.desc}</div>
+      <div class="card-stack">${p.stack.map(s=>`<span class="chip">${s}</span>`).join('')}</div>
+      <div class="card-links">${p.links.map(l=>`<a href="${l.url}" target="_blank" rel="noopener">${l.label} →</a>`).join('')}</div>
+      ${subItemsHTML}
+    `;
+
+    const toggle = el.querySelector('.dropdown-toggle');
+    if(toggle){
+      toggle.addEventListener('click', ()=>{
+        const panel = el.querySelector('.subitems');
+        const isOpen = panel.classList.toggle('open');
+        toggle.classList.toggle('open', isOpen);
+        toggle.querySelector('.toggle-label').textContent = isOpen
+          ? 'Hide breakdown'
+          : `View breakdown (${p.subItems.length})`;
+      });
+    }
+
+    grid.appendChild(el);
+  });
+}
+
+function renderSkills(){
+  const grid = document.getElementById('skillsGrid');
+  grid.innerHTML = '';
+  SKILLS.forEach(group=>{
+    const el = document.createElement('div');
+    el.className = 'skill-group';
+    el.innerHTML = `
+      <h3>${group.category}</h3>
+      <ul>${group.items.map(i=>`<li>${i}</li>`).join('')}</ul>
+    `;
+    grid.appendChild(el);
+  });
+}
+
+renderProjects();
+renderSkills();
+
+/* lightbox for subitem images */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+
+document.getElementById('projectGrid').addEventListener('click', e=>{
+  if(e.target.tagName === 'IMG' && e.target.closest('.subitem-images')){
+    lightboxImg.src = e.target.src;
+    lightboxCaption.textContent = e.target.dataset.caption || '';
+    lightbox.classList.add('open');
+  }
+});
+document.getElementById('lightboxClose').addEventListener('click', ()=> lightbox.classList.remove('open'));
+lightbox.addEventListener('click', e=>{ if(e.target === lightbox) lightbox.classList.remove('open'); });
+
+const logList = document.getElementById('logList');
+LOG.forEach(item=>{
+  const el = document.createElement('div');
+  el.className = 'log-item';
+  el.innerHTML = `<div class="log-date">${item.date}</div><div class="log-text">${item.text}</div>`;
+  logList.appendChild(el);
+});
+
+/* boot sequence */
+const bootLines = [
+  "> initializing profile...",
+  "> loading engineering.core... [OK]",
+  "> mounting project archive...  [OK]",
+  "> welcome back, engineer."
+];
+const bootEl = document.getElementById('boot');
+bootLines.forEach((line, i)=>{
+  const d = document.createElement('div');
+  d.className = 'boot-line';
+  d.style.animationDelay = (i*0.18)+'s';
+  d.textContent = line.replace('[OK]','');
+  if(line.includes('[OK]')){
+    const okSpan = document.createElement('span');
+    okSpan.className = 'ok';
+    okSpan.textContent = '[OK]';
+    d.appendChild(okSpan);
+  }
+  bootEl.appendChild(d);
+});
+</script>
+
+</body>
+</html>
