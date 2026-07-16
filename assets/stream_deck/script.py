@@ -23,7 +23,7 @@ def send_spotify_key(key):
 
 def open_spotify():
     global spotify_mode
-    subprocess.Popen(r'C:\Users\Borne\AppData\Roaming\Spotify\Spotify.exe')
+    subprocess.Popen(r'C:\Users\username\AppData\Roaming\Spotify\Spotify.exe')
     spotify_mode = True
     set_mode("SPOTIFY")
     print("Spotify mode ON")
